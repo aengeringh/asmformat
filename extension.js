@@ -59,8 +59,16 @@ function isLabel(linea) {
 function getPos(line, match) {
 	var lines = line.split("")
 	var others = false;
+	var inQuotes = false;
 	for (var j = 0; j < lines.length; ++j) {
-		if (lines[j] == match) {
+		if (lines[j] == '"') {
+			inQuotes = !inQuotes;
+			others = true;
+		}
+		else if (inQuotes) {
+			continue;
+		}
+		else if (lines[j] == match) {
 			if (others) return j;
 			else return -1;
 		}
@@ -83,13 +91,18 @@ function format(text) {
 	//Align left lines
 	for (var i = 0; i < lines.length; ++i) {
 		lines[i] = lines[i].trim();
-		lines[i] = lines[i].replace(/(\s*),(\s*)/g, ", ");
-		lines[i] = lines[i].replace(/(\s*)\t(\s*)/g, ' ');
-		lines[i] = lines[i].replace(/(\s*)\+(\s*)/g, ' + ');
-		lines[i] = lines[i].replace(/(\s*)\-(\s*)/g, ' - ');
-		lines[i] = lines[i].replace(/(\s*)\*(\s*)/g, ' * ');
-		lines[i] = lines[i].replace(/(\s*)\/(\s*)/g, ' / ');
-		lines[i] = lines[i].replace(/ +(?= )/g, '');
+		//Split into unquoted (even) and quoted (odd) parts so strings are left untouched
+		var parts = lines[i].split(/("[^"]*"?)/);
+		for (var p = 0; p < parts.length; p += 2) {
+			parts[p] = parts[p].replace(/(\s*),(\s*)/g, ", ");
+			parts[p] = parts[p].replace(/(\s*)\t(\s*)/g, ' ');
+			parts[p] = parts[p].replace(/(\s*)\+(\s*)/g, ' + ');
+			parts[p] = parts[p].replace(/(\s*)\-(\s*)/g, ' - ');
+			parts[p] = parts[p].replace(/(\s*)\*(\s*)/g, ' * ');
+			parts[p] = parts[p].replace(/(\s*)\/(\s*)/g, ' / ');
+			parts[p] = parts[p].replace(/ +(?= )/g, '');
+		}
+		lines[i] = parts.join('');
 		if (!isLabel(lines[i])) {
 			lines[i] = "\t" + lines[i];
 		}
