@@ -27,6 +27,11 @@
 				"when": "resourceExtname == .asm",
 				"command": "asmformat.format",
 				"group": "navigation"
+			  },
+			  {
+				"when": "resourceExtname == .inc",
+				"command": "asmformat.format",
+				"group": "navigation"
 			  }
 			]
 		  }

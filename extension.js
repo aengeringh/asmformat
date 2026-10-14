@@ -25,7 +25,7 @@ function updateAsm() {
 
 		if (activeTextEditor) {
 			var fileExt = activeTextEditor.document.fileName.split(".").pop();
-			if (fileExt === "asm") {
+			if (fileExt === "asm" || fileExt === "inc")  {
 				const { document } = activeTextEditor;
 
 				const content = format(document.getText());
